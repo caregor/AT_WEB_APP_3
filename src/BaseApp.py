@@ -1,3 +1,7 @@
+import logging
+import time
+
+from selenium.common import NoAlertPresentException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -19,3 +23,13 @@ class BasePage:
 
     def go_to_site(self):
         return self.driver.get(self.base_url)
+
+    def get_text_dialog_windows(self):
+        try:
+            alert = WebDriverWait(self.driver, 10).until(EC.alert_is_present(), message='cant find alert :(')
+            dialog_text = alert.text
+            logging.info(f"Текст в диалоговом окне: {dialog_text}")
+            alert.accept()
+        except NoAlertPresentException:
+            print("Диалоговое окно отсутствует на странице")
+        return dialog_text
